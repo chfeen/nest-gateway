@@ -14,7 +14,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BusinessException } from '../common/exceptions/business.exception';
 import { ConfigService } from '@nestjs/config';
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AddUserDto } from './user.dto';
 
+@ApiTags('用户')
 @Controller({
   version: '1',
   path: 'user',
@@ -25,11 +28,16 @@ export class UserController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @ApiOperation({
+    summary: '新增用户',
+  })
+  @Post('/add')
+  create(@Body() user: AddUserDto) {
+    return this.userService.createOrSave(user);
   }
-
+  @ApiOperation({
+    summary: '查询用户列表',
+  })
   @Get()
   @Version('1')
   findAll() {
